@@ -51,3 +51,39 @@ The scrypt.py create first conneciton with the Apache Spark Cluster.
 - You can reload the execution of the python scrypt in docker desktop.
 
 ![image](./docs/reload_python.png)
+
+## Docker compose
+
+Voici un petit rapelle des commande de base.
+
+- Executer un fichier docker compose en particulier
+
+```
+docker-compose -f <chemin_du_fichier_docker_compose.yml> up --build
+```
+
+- Executer un service en particulier dans un fichier en particulier
+
+```
+docker-compose -f <chemin_du_fichier_docker_compose.yml> run <nom_du_service>
+```
+
+- Afficher les containers qui tournent
+
+```
+docker ps
+```
+
+- Afficher tout les containers
+
+```
+docker ps -a
+```
+
+- Down le docker en cours avec **Ctrl + c**
+
+- Supprimer les ressources inutilisées
+
+```
+docker prune
+```
