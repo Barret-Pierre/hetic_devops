@@ -50,4 +50,4 @@ The scrypt.py create first conneciton with the Apache Spark Cluster.
 
 - You can reload the execution of the python scrypt in docker desktop.
 
-![image](./docs/docker_desktop.png)
+![image](./docs/reload_python.png)
