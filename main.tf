@@ -46,8 +46,28 @@ resource "aws_instance" "mongodb-docker" {
   }
 }
 
-resource "null_resource" "copy_docker_compose" {
+resource "null_resource" "install_docker_compose" {
   depends_on = [aws_instance.mongodb-docker]
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("/Users/lounisord/.ssh/docker_aws_key.pem") 
+    host        = aws_instance.mongodb-docker.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo curl -L \"https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
+      "sudo chmod +x /usr/local/bin/docker-compose",
+      "docker-compose --version",  
+    ]
+  }
+}
+
+
+resource "null_resource" "copy_docker_compose" {
+  depends_on = [null_resource.install_docker_compose]
 
   connection {
     type        = "ssh"
@@ -58,6 +78,26 @@ resource "null_resource" "copy_docker_compose" {
 
   provisioner "file" {
     source      = "./docker-compose-mongodb.yml" 
-    destination = "/tmp/docker-compose/docker-compose.yml"
+    destination = "/tmp/docker-compose/docker-compose-mongodb.yml"
+  }
+}
+
+resource "null_resource" "execute_docker_compose" {
+  depends_on = [null_resource.copy_docker_compose]
+
+  count = 1
+  
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("/Users/lounisord/.ssh/docker_aws_key.pem") 
+    host        = aws_instance.mongodb-docker.public_ip
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "cd /tmp/docker-compose",
+      "docker-compose -f docker-compose-mongodb.yml up --build ",
+      "exit"
+    ]
   }
 }
