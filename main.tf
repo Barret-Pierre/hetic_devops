@@ -97,7 +97,6 @@ resource "null_resource" "execute_docker_compose" {
     inline = [
       "cd /tmp/docker-compose",
       "docker-compose -f docker-compose-mongodb.yml up --build ",
-      "exit"
     ]
   }
 }
