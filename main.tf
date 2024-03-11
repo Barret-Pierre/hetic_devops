@@ -10,16 +10,18 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-west-3"
+  region = "us-west-2"
 }
 
 resource "aws_instance" "spark-docker" {
   ami           = "ami-0eb5115914ccc4bc2"
   instance_type = "t2.micro"
-  key_name      = "docker_aws_key"
+  key_name      = "default_key"
   tags = {
     Name = "aws-docker-spark"
   }
+
+  vpc_security_group_ids = ["sg-00eb0fd0b00206c5f"]
   
   provisioner "remote-exec" {
     inline = [
@@ -41,7 +43,7 @@ resource "aws_instance" "spark-docker" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("/Users/samue/.ssh/docker_aws_key.pem") 
+    private_key = file("C:/Users/Maxen/.ssh/id_rsa")  # A changer
     host        = self.public_ip
   }
 }
@@ -52,7 +54,7 @@ resource "null_resource" "install_docker_compose" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("/Users/samue/.ssh/docker_aws_key.pem") 
+    private_key = file("C:/Users/Maxen/.ssh/id_rsa")  # A changer
     host        = aws_instance.spark-docker.public_ip
   }
 
@@ -72,13 +74,28 @@ resource "null_resource" "copy_docker_compose" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("/Users/samue/.ssh/docker_aws_key.pem") 
+    private_key = file("C:/Users/Maxen/.ssh/id_rsa")  # A changer
     host        = aws_instance.spark-docker.public_ip
   }
 
   provisioner "file" {
     source      = "./docker-compose-spark.yml" 
-    destination = "/tmp/docker-compose/docker-compose-spark.yml"
+    destination = "/home/ec2-user/docker-compose-spark.yml"
+  }
+
+  provisioner "file" {
+    source      = "./requirements.txt"
+    destination = "/home/ec2-user/requirements.txt"
+  }
+
+  provisioner "file" {
+    source      = "./Dockerfile"
+    destination = "/home/ec2-user/Dockerfile"
+  }
+
+  provisioner "file" {
+    source      = "./script.py"
+    destination = "/home/ec2-user/script.py"
   }
 }
 
@@ -90,13 +107,12 @@ resource "null_resource" "execute_docker_compose" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("/Users/samue/.ssh/docker_aws_key.pem") 
+    private_key = file("C:/Users/Maxen/.ssh/id_rsa")  # A changer
     host        = aws_instance.spark-docker.public_ip
   }
   provisioner "remote-exec" {
     inline = [
-      "cd /tmp/docker-compose",
-      "docker-compose -f docker-compose-spark.yml up --build ",
+      "docker-compose -f docker-compose-spark.yml up --build -d",
     ]
   }
 }

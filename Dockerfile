@@ -8,11 +8,13 @@ RUN apt-get update && \
 # Définir JAVA_HOME
 ENV JAVA_HOME /usr/lib/jvm/default-java
 
-WORKDIR /app
+WORKDIR /
 
-COPY requirements.txt /app
+COPY /script.py /
+
+COPY /requirements.txt /
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app/script.py /app
 
 CMD ["python3", "./script.py"]
