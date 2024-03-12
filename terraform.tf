@@ -10,17 +10,17 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-west-3"
+  region = var.region
 }
 
 resource "aws_instance" "mongodb-docker" {
-  ami           = "ami-0b7282dd7deb48e78"
+  ami           = var.ami
   instance_type = "t2.micro"
-  key_name      = "tp_devops"
+  key_name      = var.key_name
   tags = {
     Name = "aws_docker_mongo"
   }
-  vpc_security_group_ids = [ "sg-0b382662fbf5c3b45" ]
+  vpc_security_group_ids = [ var.vpc_security_group_id ]
 }
 
 resource "null_resource" "install_docker" {
@@ -29,7 +29,7 @@ resource "null_resource" "install_docker" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = file("./tp_devops.pem")  # Fichier de la clé privée
+    private_key = file(var.private_key_path_file)  # Fichier de la clé privée
     host        = aws_instance.mongodb-docker.public_ip
   }
 
@@ -52,7 +52,7 @@ resource "null_resource" "deploy_mongo" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("./tp_devops.pem") 
+    private_key = file(var.private_key_path_file) 
     host        = aws_instance.mongodb-docker.public_ip
   }
 
@@ -75,7 +75,7 @@ resource "aws_instance" "spark-pyspark" {
   tags = {
     Name = "aws_docker_pyspark"
   }
-  vpc_security_group_ids = [ "sg-0b382662fbf5c3b45" ]
+  vpc_security_group_ids = [ var.vpc_security_group_id ]
 }
 
 resource "null_resource" "install_docker_on_spark_instance" {
@@ -84,7 +84,7 @@ resource "null_resource" "install_docker_on_spark_instance" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = file("./tp_devops.pem")  # Fichier de la clé privée
+    private_key = file(var.private_key_path_file)  # Fichier de la clé privée
     host        = aws_instance.spark-pyspark.public_ip
   }
 
@@ -107,7 +107,7 @@ resource "null_resource" "deploy_pyspark" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("./tp_devops.pem") 
+    private_key = file(var.private_key_path_file) 
     host        = aws_instance.spark-pyspark.public_ip
   }
 
