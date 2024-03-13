@@ -29,7 +29,7 @@ resource "null_resource" "install_docker" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = file(var.private_key_path_file)  # Fichier de la clé privée
+    private_key = var.private_key
     host        = aws_instance.mongodb-docker.public_ip
   }
 
@@ -52,7 +52,7 @@ resource "null_resource" "deploy_mongo" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.private_key_path_file) 
+    private_key = var.private_key
     host        = aws_instance.mongodb-docker.public_ip
   }
 
@@ -84,7 +84,7 @@ resource "null_resource" "install_docker_on_spark_instance" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = file(var.private_key_path_file)  # Fichier de la clé privée
+    private_key = var.private_key 
     host        = aws_instance.spark-pyspark.public_ip
   }
 
@@ -107,7 +107,7 @@ resource "null_resource" "deploy_pyspark" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.private_key_path_file) 
+    private_key = var.private_key
     host        = aws_instance.spark-pyspark.public_ip
   }
 
