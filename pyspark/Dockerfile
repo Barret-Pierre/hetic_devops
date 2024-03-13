@@ -8,13 +8,14 @@ RUN apt-get update && \
 # Définir JAVA_HOME
 ENV JAVA_HOME /usr/lib/jvm/default-java
 
-WORKDIR /
+WORKDIR /app
 
-COPY /script.py /
-
-COPY /requirements.txt /
-
+COPY requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-CMD ["python3", "./script.py"]
+COPY ./app/main.py /app
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
