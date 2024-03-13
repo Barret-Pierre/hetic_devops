@@ -3,59 +3,28 @@ version: "3.3"
 services:
   pyspark-app:
     build:
-      context: .
+      context: ./pyspark/
       dockerfile: Dockerfile
-    volumes:
-      - ./app:/app
     environment:
       - SPARK_MASTER=spark://spark:7077
     depends_on:
       - spark
       - spark-worker
-      - mongo
     ports:
       - "8000:8000"
-
   spark:
-    image: docker.io/bitnami/spark:3.5
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-    ports:
-      - "8080:8080"
-
+    extends:
+      file: ./pyspark/docker-compose-spark.yml
+      service: spark
   spark-worker:
-    image: docker.io/bitnami/spark:3.5
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-
+    extends:
+      file: ./pyspark/docker-compose-spark.yml
+      service: spark-worker
   mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
+    extends:
+      file: ./mongo/docker-compose-mongo.yml
+      service: mongo
   mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: password
+    extends:
+      file: ./mongo/docker-compose-mongo.yml
+      service: mongo-express
