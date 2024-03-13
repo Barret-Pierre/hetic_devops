@@ -13,7 +13,16 @@ provider "aws" {
   region = var.region
 }
 
+###### MONGO #######
+
+data "aws_instances" "existing_mongo" {
+  instance_tags = {
+    Name = "aws_docker_mongo"
+  }
+}
+
 resource "aws_instance" "mongodb-docker" {
+  count         = length(data.aws_instances.existing_mongo.ids) > 0 ? 0 : 1
   ami           = var.ami
   instance_type = "t2.micro"
   key_name      = var.key_name
@@ -21,16 +30,12 @@ resource "aws_instance" "mongodb-docker" {
     Name = "aws_docker_mongo"
   }
   vpc_security_group_ids = [ var.vpc_security_group_id ]
-}
-
-resource "null_resource" "install_docker" {
-  depends_on = [aws_instance.mongodb-docker]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
     private_key = var.private_key
-    host        = aws_instance.mongodb-docker.public_ip
+    host        = self.public_ip
   }
 
   provisioner "file" {
@@ -47,13 +52,14 @@ resource "null_resource" "install_docker" {
 }
 
 resource "null_resource" "deploy_mongo" {
-  depends_on = [null_resource.install_docker]
+  count         = length(data.aws_instances.existing_mongo.ids) > 0 ? 0 : 1
+  depends_on = [aws_instance.mongodb-docker]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.private_key
-    host        = aws_instance.mongodb-docker.public_ip
+    host        = aws_instance.app_server[0].public_ip
   }
 
   provisioner "file" {
@@ -68,24 +74,52 @@ resource "null_resource" "deploy_mongo" {
   }
 }
 
+resource "null_resource" "update_mongo" {
+  count         = length(data.aws_instances.existing_mongo.ids) > 0 ? 1 : 0
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = var.private_key
+    host        = data.aws_instances.existing_mongo.public_ips[0]
+  }
+
+  provisioner "file" {
+    source      = "./mongo/docker-compose-mongo.yml" 
+    destination = "./docker-compose-mongo.yml"  
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo docker-compose -f docker-compose.yml stop",
+      "docker-compose -f docker-compose-mongo.yml up --build -d"
+    ]
+  }
+}
+
+##### PYSPARK #####
+
+data "aws_instances" "existing_spark_pyspark" {
+  instance_tags = {
+    Name = "aws_docker_pyspark"
+  }
+}
+
 resource "aws_instance" "spark-pyspark" {
+  count         = length(data.aws_instances.existing_spark_pyspark.ids) > 0 ? 0 : 1
   ami           = "ami-0b7282dd7deb48e78"
   instance_type = "t2.micro"
-  key_name      = "tp_devops"
+  key_name      = var.key_name
   tags = {
     Name = "aws_docker_pyspark"
   }
   vpc_security_group_ids = [ var.vpc_security_group_id ]
-}
-
-resource "null_resource" "install_docker_on_spark_instance" {
-  depends_on = [aws_instance.spark-pyspark]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
     private_key = var.private_key 
-    host        = aws_instance.spark-pyspark.public_ip
+    host        = self.public_ip
   }
 
   provisioner "file" {
@@ -102,13 +136,14 @@ resource "null_resource" "install_docker_on_spark_instance" {
 }
 
 resource "null_resource" "deploy_pyspark" {
-  depends_on = [null_resource.install_docker_on_spark_instance]  
+  count         = length(data.aws_instances.existing_spark_pyspark.ids) > 0 ? 0 : 1
+  depends_on = [aws_instance.spark-pyspark]  
 
   connection {
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.private_key
-    host        = aws_instance.spark-pyspark.public_ip
+    host        = aws_instance.app_server[0].public_ip
   }
 
   provisioner "file" {
@@ -118,6 +153,29 @@ resource "null_resource" "deploy_pyspark" {
 
   provisioner "remote-exec" {
     inline = [
+      "docker-compose -f docker-compose-spark.yml up --build -d",
+    ]
+  }
+}
+
+resource "null_resource" "update_pyspark" {
+  count         = length(data.aws_instances.existing_spark_pyspark.ids) > 0 ? 1 : 0
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"  
+    private_key = var.private_key
+    host        = data.aws_instances.existing_spark_pyspark.public_ips[0]
+  }
+
+  provisioner "file" {
+    source      = "./pyspark/" 
+    destination = "./"  
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "docker-compose -f docker-compose-spark.yml stop",
       "docker-compose -f docker-compose-spark.yml up --build -d",
     ]
   }
