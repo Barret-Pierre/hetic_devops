@@ -91,7 +91,7 @@ resource "null_resource" "update_mongo" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker-compose -f docker-compose.yml stop",
+      "sudo docker-compose -f docker-compose-mongo.yml stop",
       "docker-compose -f docker-compose-mongo.yml up --build -d"
     ]
   }
