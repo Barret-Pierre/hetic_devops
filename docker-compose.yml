@@ -13,6 +13,8 @@ services:
       - spark
       - spark-worker
       - mongo
+    ports:
+      - "8000:8000"
 
   spark:
     image: docker.io/bitnami/spark:3.5
