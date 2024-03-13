@@ -11,7 +11,7 @@ services:
       - spark
       - spark-worker
     ports:
-      - "8000:8000"
+      - "8000:8010"
 
   spark:
     image: docker.io/bitnami/spark:3.5
