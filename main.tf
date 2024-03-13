@@ -59,7 +59,7 @@ resource "null_resource" "deploy_mongo" {
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.private_key
-    host        = aws_instance.app_server[0].public_ip
+    host        = aws_instance.mongodb-docker[0].public_ip
   }
 
   provisioner "file" {
@@ -143,7 +143,7 @@ resource "null_resource" "deploy_pyspark" {
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.private_key
-    host        = aws_instance.app_server[0].public_ip
+    host        = aws_instance.spark-pyspark[0].public_ip
   }
 
   provisioner "file" {
