@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - "refactor/folder_archi"
   workflow_run:
     workflows: ["CI with Python TestUnit"]
     types:

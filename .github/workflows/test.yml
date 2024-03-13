@@ -5,6 +5,7 @@ on:
       - "*"
     branches-ignore:
       - "main"
+      - "refactor/folder_archi"
 
 jobs:
   test:
