@@ -193,7 +193,7 @@ resource "aws_cloudwatch_metric_alarm" "mongodb_cpu_utilization_alarm" {
   namespace           = "AWS/EC2"
   period              = "300"
   statistic           = "Average"
-  threshold           = "70"
+  threshold           = "85"
   alarm_description   = "This metric monitors CPU utilization on MongoDB instance"
 
   dimensions = {
@@ -210,7 +210,7 @@ resource "aws_cloudwatch_metric_alarm" "spark_pyspark_cpu_utilization_alarm" {
   namespace           = "AWS/EC2"
   period              = "300"
   statistic           = "Average"
-  threshold           = "70"
+  threshold           = "85"
   alarm_description   = "This metric monitors CPU utilization for Spark PySpark instance"
 
   dimensions = {
