@@ -39,7 +39,7 @@ resource "aws_instance" "mongodb-docker" {
   }
 
   provisioner "file" {
-    source      = "./install_docker.sh"  # Chemin de la source
+    source      = "../install_docker.sh"  # Chemin de la source
     destination = "/tmp/install_docker.sh"  # Le chemin sur l'instance EC2 où copier le fichier
   }
 
@@ -63,7 +63,7 @@ resource "null_resource" "deploy_mongo" {
   }
 
   provisioner "file" {
-    source      = "./mongo/docker-compose-mongo.yml" 
+    source      = "../mongo/docker-compose-mongo.yml" 
     destination = "./docker-compose-mongo.yml"  
   }
 
@@ -85,7 +85,7 @@ resource "null_resource" "update_mongo" {
   }
 
   provisioner "file" {
-    source      = "./mongo/docker-compose-mongo.yml" 
+    source      = "../mongo/docker-compose-mongo.yml" 
     destination = "./docker-compose-mongo.yml"  
   }
 
@@ -123,7 +123,7 @@ resource "aws_instance" "spark-pyspark" {
   }
 
   provisioner "file" {
-    source      = "./install_docker.sh"  # Chemin de la source
+    source      = "../install_docker.sh"  # Chemin de la source
     destination = "/tmp/install_docker.sh"  # Le chemin sur l'instance EC2 où copier le fichier
   }
 
@@ -147,7 +147,7 @@ resource "null_resource" "deploy_pyspark" {
   }
 
   provisioner "file" {
-    source      = "./pyspark/" 
+    source      = "../pyspark/" 
     destination = "./"  
   }
 
@@ -169,7 +169,7 @@ resource "null_resource" "update_pyspark" {
   }
 
   provisioner "file" {
-    source      = "./pyspark/" 
+    source      = "../pyspark/" 
     destination = "./"  
   }
 
