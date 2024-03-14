@@ -11,10 +11,10 @@ ENV JAVA_HOME /usr/lib/jvm/default-java
 WORKDIR /app
 
 COPY requirements.txt /app
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-COPY main.py /app
+COPY ./app/main.py /app
 
 EXPOSE 8000
 

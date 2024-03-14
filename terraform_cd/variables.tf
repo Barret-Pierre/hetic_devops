@@ -13,17 +13,14 @@ variable "region" {
 variable "vpc_security_group_id" {
   description = "Value of the AWS secutiry group id"
   type        = string
-  default = "sg-0b382662fbf5c3b45" # Change by your VPC id
 }
 
 variable "key_name" {
   description = "Value of the AWS key name"
   type        = string
-  default = "tp_devops" # Change by key pair name
 }
 
-variable "private_key_path" {
-  description = "Value of the AWS private key path"
+variable "private_key" {
+  description = "Value of the AWS private key"
   type        = string
-  default = "./private_key.pem" # Change by private key path saved on this root folder 
 }
