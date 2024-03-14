@@ -12,7 +12,7 @@ def read_root():
 
     # Connection au cluster Apache Spark
     SparkSession.builder.master(spark_master).getOrCreate().stop()
-    return "Hello World Spark is connected, it's cool isn't it"
+    return "Hello World Spark is connected"
 
 
 def is_odd(n: int):
