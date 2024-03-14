@@ -196,7 +196,7 @@ resource "aws_cloudwatch_metric_alarm" "mongodb_cpu_utilization_alarm" {
   alarm_description   = "This metric monitors CPU utilization on MongoDB instance"
 
   dimensions = {
-    InstanceId = aws_instance.mongodb-docker.id
+    InstanceId = aws_instance.mongodb-docker[0].id
   }
 }
 
@@ -212,7 +212,7 @@ resource "aws_cloudwatch_metric_alarm" "spark_pyspark_cpu_utilization_alarm" {
   alarm_description   = "This metric monitors CPU utilization on Spark PySpark instance"
 
   dimensions = {
-    InstanceId = aws_instance.spark-pyspark.id
+    InstanceId = aws_instance.spark-pyspark[0].id
   }
 }
 
