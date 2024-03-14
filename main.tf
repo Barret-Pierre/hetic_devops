@@ -211,7 +211,7 @@ resource "aws_cloudwatch_metric_alarm" "spark_pyspark_cpu_utilization_alarm" {
   period              = "300"
   statistic           = "Average"
   threshold           = "70"
-  alarm_description   = "This metric monitors CPU utilization on Spark PySpark instance"
+  alarm_description   = "This metric monitors CPU utilization for Spark PySpark instance"
 
   dimensions = {
     InstanceId = aws_instance.spark-pyspark[0].id
