@@ -30,6 +30,7 @@ resource "aws_instance" "mongodb-docker" {
     Name = "aws_docker_mongo"
   }
   vpc_security_group_ids = [var.vpc_security_group_id]
+  monitoring             = true
 
   connection {
     type        = "ssh"
@@ -114,6 +115,7 @@ resource "aws_instance" "spark-pyspark" {
     Name = "aws_docker_pyspark"
   }
   vpc_security_group_ids = [var.vpc_security_group_id]
+  monitoring             = true
 
   connection {
     type        = "ssh"
