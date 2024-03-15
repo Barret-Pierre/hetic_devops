@@ -188,7 +188,7 @@ resource "aws_cloudwatch_metric_alarm" "mongodb_cpu_utilization_alarm" {
   count               = length(data.aws_instances.existing_mongo.ids) > 0 ? 0 : 1
   alarm_name          = "mongodb-cpu-utilization-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
   period              = "300"
@@ -205,7 +205,7 @@ resource "aws_cloudwatch_metric_alarm" "spark_pyspark_cpu_utilization_alarm" {
   count               = length(data.aws_instances.existing_spark_pyspark.ids) > 0 ? 0 : 1
   alarm_name          = "spark-pyspark-cpu-utilization-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
   period              = "300"
