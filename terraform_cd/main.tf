@@ -119,7 +119,7 @@ resource "aws_instance" "spark-pyspark" {
 
   connection {
     type        = "ssh"
-    user        = "ec2-user" # Faire attention, change en fonction des AIM
+    user        = "ec2-user" # Faire attention, change en fonction des AMI
     private_key = var.private_key
     host        = self.public_ip
   }
