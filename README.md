@@ -13,7 +13,7 @@ It will execute a python script in a venv using docker compose.
 
 Here a view of the project architecture
 
-![Project Architecture](Project)
+![Project Architecture](docs\devops_2.png)
 
 ## Install and run the project localy
 
@@ -56,6 +56,9 @@ The python application is connected to the Apache Spark Cluster.
 
 This section explain how to esealy deploy the project. For this we use Terraform.
 This project contains **two** terraform configs, the root one is for deploy from your local to AWS and other is using by github actions for the CD. This part talking about deploy to AWS from your loacl. If you want to configure your CI/CD go to [CI / CD](#ci--cd).
+
+Exemple of Terraform Workflow :
+![Terraform Workflow](docs\devops_1.png)
 
 ### First thing first
 
@@ -126,7 +129,7 @@ Here you go ! Your cluster are deployed and functionnal for access to your clust
 
 Here a view of the project architecture
 
-![Deploy Architecture](deploy)
+![Deployment architecture](docs\devops_3.png)
 
 ### Mongo
 
@@ -197,4 +200,4 @@ You can see the run logs in the github actions section of your repository.
 
 Here a graphic view of the workflow in place
 
-![CI/CD Workflows](workflow)
+![CI/CD Workflows](docs\workflow_CICD.png)
